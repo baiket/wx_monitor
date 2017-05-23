@@ -1,0 +1,86 @@
+<!-- hbox layout -->
+<div class="hbox hbox-auto-xs bg-light " ng-init="
+  app.settings.asideFixed = true;
+  app.settings.asideDock = false;
+  app.settings.container = false;
+  app.hideAside = false;
+  app.hideFooter = true;
+  " ng-controller="subnet_search_ctrl">
+  
+<div class="wrapper-md">
+	<toaster-container toaster-options="{'position-class': 'toast-bottom-right', 'close-button':true}"></toaster-container>
+  <form  class="m-b-md" ng-submit="subnet_search(subnet)">
+    <div class="input-group">
+      <input type="text" class="form-control input-lg" placeholder="在此输入网段" ng-model="subnet">
+      <span class="input-group-btn">
+        <button class="btn btn-lg btn-default" type="submit"  type="button">Search</button>
+      </span>
+    </div>
+  </form>
+  <div class="tab-container" ng-hide="issearch">
+    <ul class="nav nav-tabs">
+      <li class="active"><a href data-toggle="tab" data-target="#tab_1">搜索结果 </a></li>
+    </ul>
+    <div class="tab-content">
+      <div class="tab-pane active" id="tab_1">
+      	<table st-table="rowCollectionBasic" class="table table-bordered table-striped">
+		      <thead>
+		      <tr>
+		        <th>网段</th>
+		        <th>国家</th>
+		        <th>大区</th>
+		        <th>省份</th>
+		        <th>城市</th>
+		        <th>县城</th>
+		        <th>运营商</th>
+		        <th>来源</th>
+		      </tr>
+		      </thead>
+		      <tbody>
+		      <tr ng-repeat="row in subnets_custom" st-select-row="row">
+		        <td>{{row.subnet}}</td>
+		        <td>{{row.country}}</td>
+		        <td>{{row.area}}</td>
+		        <td>{{row.region}}</td>
+		        <td>{{row.city}}</td>
+		        <td>{{row.county}}</td>
+		        <td>{{row.isp}}</td>
+		        <td>淘宝IP库</td>
+		      </tr>
+		      <tr ng-repeat="row in subnets_taobao" st-select-row="row">
+		        <td>{{row.subnet}}</td>
+		        <td>{{row.country}}</td>
+		        <td>{{row.area}}</td>
+		        <td>{{row.region}}</td>
+		        <td>{{row.city}}</td>
+		        <td>{{row.county}}</td>
+		        <td>{{row.isp}}</td>
+	         <td>自定义IP库</td>
+		      </tr>
+		      </tbody>
+		    </table>
+    
+        <!--<ul class="list-group no-borders pull-in m-b-none">
+          <li class="list-group-item" ng-repeat="row in subnets_taobao">
+            <a href class="h4 text-primary m-b-sm m-t-sm block">{{row.subnet}}</a>
+            <p>坐标： {{row.country}} | {{row.area}} | {{row.region}} | {{row.city}} | {{row.county}}</p>
+            <p>运营商： {{row.isp}} </p>
+            <p><span class="label bg-primary pos-rlt m-r inline wrapper-xs"><i class="arrow right arrow-primary"></i> Tags:</span> <a href class="m-r-sm">淘宝IP库</a>
+            </p>
+          </li>
+          
+          <li class="list-group-item" ng-repeat="row in subnets_custom">
+          	<a href class="h4 text-primary m-b-sm m-t-sm block">{{row.subnet}}</a>
+            <p>坐标： {{row.country}} | {{row.area}} | {{row.region}} | {{row.city}} | {{row.county}}</p>
+            <p>运营商： {{row.isp}} </p>
+            <p><span class="label bg-info pos-rlt m-r inline wrapper-xs"><i class="arrow right arrow-info"></i> Tags:</span> <a href class="m-r-sm">自定义IP库</a>
+            </p>
+          </li>
+        </ul>-->
+      </div>
+    </div>
+  </tabset>
+</div>
+  <!-- /column -->
+</div>
+<!-- /hbox layout -->

@@ -1,0 +1,283 @@
+#!/bin/bash
+
+source /etc/profile
+PATH=$PATH:/bin:/usr/bin:/usr/local/bin:/sbin:/usr/sbin:/usr/local/sbin
+
+export C_FORCE_ROOT="true"
+
+readonly PROGPID=$$
+readonly PROGNAME=$(basename $0)
+readonly PROGDIR=$(readlink -m $(dirname $0))
+readonly ARGS="$@"
+
+if [[ "${VIRTUAL_ENV}" == "" ]]; then
+    echo "please activate VIRTUAL_ENV first!"
+    exit 2
+fi
+mkdir -p ${VIRTUAL_ENV}/{logs,tmp}
+uwsgi_bin=${VIRTUAL_ENV}/bin/uwsgi
+[ ! -f ${uwsgi_bin} ] && uwsgi_bin=$(which uwsgi)
+uwsgi_pid=${VIRTUAL_ENV}/tmp/uwsgi.pid
+uwsgi_sock=${VIRTUAL_ENV}/tmp/uwsgi.sock
+uwsgi_stats=${VIRTUAL_ENV}/tmp/uwsgi_stats.sock
+uwsgi_log=${VIRTUAL_ENV}/logs/uwsgi.log
+uwsgi_ini=${PROGDIR}/uwsgi.ini
+
+cd ${PROGDIR}
+project_name=$(cat manage.py|grep -oP "[-_0-9A-Za-z]+(?=\.settings)")
+
+cat > ${uwsgi_ini} << EOF
+[uwsgi]
+chdir = ${PROGDIR}
+virtualenv = ${VIRTUAL_ENV}
+env = DJANGO_SETTINGS_MODULE=${project_name}.settings
+wsgi-file = ${PROGDIR}/${project_name}/wsgi.py
+#uWsgi Socket
+socket = ${uwsgi_sock}
+chmod-socket = 666
+#uWsgi Stats
+stats = ${uwsgi_stats}
+#Daemonize Log
+daemonize = ${uwsgi_log}
+# Master process
+master = true
+# Maximum number of worker processes
+processes = 4
+threads = 4
+# Set timeout
+harakiri = 60
+harakiri-verbose = true
+# Limit queue
+listen = 64
+max-requests = 10000
+# Limit post-size
+limit-post = 65536
+# When to start buffering for post-vars
+post-buffering = 8192    ## none of these makes my problem go away
+post-buffering-bufsize = 65536
+# Whatever this does .. it works for pyramid (got it from a tutorial)
+reload-on-as = 128
+reload-on-rss = 96
+no-orphans = true
+log-slow = true
+python-autoreload = true
+DEBUG = True
+buffer-size = 65536
+# Clean up environment on exit
+vacuum = true
+
+EOF
+
+if [[ -f supervisord.conf ]]; then
+cat > supervisord.conf << EOF
+;[inet_http_server]
+;port=0.0.0.0:9001
+
+[unix_http_server]
+file = ${VIRTUAL_ENV}/tmp/supervisord.sock
+chmod = 0777
+chown= root:root
+
+[supervisorctl]
+serverurl = unix://${VIRTUAL_ENV}/tmp/supervisord.sock
+
+[rpcinterface:supervisor]
+supervisor.rpcinterface_factory = supervisor.rpcinterface:make_main_rpcinterface
+
+[supervisord]
+logfile=${VIRTUAL_ENV}/logs/supervisord.log ; (main log file;default $CWD/supervisord.log)
+logfile_maxbytes=50MB                       ; (max main logfile bytes b4 rotation;default 50MB)
+logfile_backups=10                          ; (num of main logfile rotation backups;default 10)
+loglevel=info                               ; (log level;default info; others: debug,warn,trace)
+pidfile=${VIRTUAL_ENV}/tmp/supervisord.pid  ; (supervisord pidfile;default supervisord.pid)
+nodaemon=false                              ; (start in foreground if true;default false)
+minfds=1024                                 ; (min. avail startup file descriptors;default 1024)
+minprocs=200                                ; (min. avail process descriptors;default 200)
+
+;[program:${project_name}.webserver]
+;{% if settings.DEBUG %}
+;command=python manage.py runserver 0.0.0.0:8000
+;{% else %}
+;command=${VIRTUAL_ENV}/bin/uwsgi --pidfile ${VIRTUAL_ENV}/tmp/uwsgi.pid --ini ${VIRTUAL_ENV}/src/uwsgi.ini
+;{% endif %}
+;user=root
+;numprocs=1
+;directory=${VIRTUAL_ENV}/src
+;stdout_logfile=${VIRTUAL_ENV}/logs/supervisor-webserver.log
+;stderr_logfile=${VIRTUAL_ENV}/logs/supervisor-webserver.err
+;startsecs=10
+;stopwaitsecs=120
+;priority=998
+;stopsignal=KILL
+;stopasgroup=true
+
+[program:${project_name}.celeryd]
+command=python manage.py celery worker
+user=root
+numprocs=1
+directory=${VIRTUAL_ENV}/src
+stdout_logfile=${VIRTUAL_ENV}/logs/supervisor-celeryd.log
+stderr_logfile=${VIRTUAL_ENV}/logs/supervisor-celeryd.err
+autostart=true
+autorestart=true
+startsecs=10
+stopwaitsecs=120
+priority=998
+stopsignal=KILL
+stopasgroup=true
+
+[program:${project_name}.celerybeat]
+command=python manage.py celery beat --schedule=${VIRTUAL_ENV}/tmp/celerybeat.schedule --pidfile=${VIRTUAL_ENV}/tmp/celerybeat.pid --loglevel=ERROR
+user=root
+numprocs=1
+directory=${VIRTUAL_ENV}/src
+stdout_logfile=${VIRTUAL_ENV}/logs/supervisor-celery_beat.log
+stderr_logfile=${VIRTUAL_ENV}/logs/supervisor-celery_beat.err
+autostart=true
+autorestart=true
+startsecs=10
+stopwaitsecs=120
+priority=998
+stopsignal=KILL
+stopasgroup=true
+
+[program:${project_name}.celerycam]
+command=python manage.py celerycam --frequency=10.0 --pidfile=${VIRTUAL_ENV}/tmp/celerycam.pid --loglevel=ERROR
+user=root
+numprocs=1
+directory=${VIRTUAL_ENV}/src
+stdout_logfile=${VIRTUAL_ENV}/logs/supervisor-celery_cam.log
+stderr_logfile=${VIRTUAL_ENV}/logs/supervisor-celery_cam.err
+autostart=true
+autorestart=true
+startsecs=10
+stopwaitsecs=120
+priority=998
+stopsignal=KILL
+stopasgroup=true
+
+;[program:${project_name}.celeryflower]
+;command=python manage.py celery flower --pidfile=${VIRTUAL_ENV}/tmp/celeryflower.pid --loglevel=ERROR
+;user=root
+;numprocs=1
+;directory=${VIRTUAL_ENV}/src
+;stdout_logfile=${VIRTUAL_ENV}/logs/supervisor-celery_flower.log
+;stderr_logfile=${VIRTUAL_ENV}/logs/supervisor-celery_flower.err
+;autostart=true
+;autorestart=true
+;startsecs=10
+;stopwaitsecs=120
+;priority=998
+;stopsignal=KILL
+;stopasgroup=true
+
+EOF
+fi
+
+start() {
+    cd ${VIRTUAL_ENV}/src/
+
+    if [[ -f supervisord.conf ]]; then
+        if [[ $(ps --no-heading -fC supervisord | grep "${VIRTUAL_ENV}/bin/supervisord -c supervisord.conf" | wc -l) -lt 1 ]]; then
+            echo "Start new Supervisord"
+            supervisord -c supervisord.conf
+        fi
+        python manage.py supervisor start all
+        echo "Start Supervisord [OK]"
+    fi
+    ps --no-heading -fC uwsgi|awk '{if($3==1)print$2}'|while read pid; do
+        if [[ ${pid} -ge 1 ]]; then
+            ps_cwd=$(lsof -p ${pid}|awk '{if($4=="cwd")print$NF}'|head -n1)
+            ps_cmd=$(ps --no-heading -o command --pid ${pid}|grep -oP "[\S]+?\.ini"|tail -n1)
+            if [[ "${ps_cmd}" == "" ]]; then
+                continue
+            fi
+            cd ${ps_cwd}
+            ps_ini=$(readlink -m ${ps_cmd})
+            if [[ "${uwsgi_ini}" == "${ps_ini}" ]]; then
+                echo "uwsgi is running!"
+                exit 0
+            fi
+        fi
+    done
+    ${uwsgi_bin} --pidfile ${uwsgi_pid} --ini ${uwsgi_ini}
+    echo "Start uWsgi [OK]"
+}
+stop() {
+    cd ${VIRTUAL_ENV}/src/
+
+    if [[ -f supervisord.conf ]]; then
+        python manage.py supervisor stop all
+        if [[ $(ps --no-heading -fC supervisord | grep "${VIRTUAL_ENV}/bin/supervisord -c supervisord.conf" | wc -l) -gt 0 ]]; then
+            ps --no-heading -fC supervisord | grep "${VIRTUAL_ENV}/bin/supervisord -c supervisord.conf" | awk '{print$2}' | while read pid; do kill -9 ${pid}; done
+        fi
+        echo "Stop Supervisord [OK]"
+    fi
+    ps --no-heading -fC uwsgi|awk '{if($3==1)print$2}'|while read pid; do
+        if [[ ${pid} -ge 1 ]]; then
+            ps_cwd=$(lsof -p ${pid}|awk '{if($4=="cwd")print$NF}'|head -n1)
+            ps_cmd=$(ps --no-heading -o command --pid ${pid}|grep -oP "[\S]+?\.ini"|tail -n1)
+            if [[ "${ps_cmd}" == "" ]]; then
+                continue
+            fi
+            cd ${ps_cwd}
+            ps_ini=$(readlink -m ${ps_cmd})
+            if [[ "${uwsgi_ini}" == "${ps_ini}" ]]; then
+                echo ${pid} > ${uwsgi_pid}
+                ${uwsgi_bin} --stop ${uwsgi_pid}
+            fi
+        fi
+    done
+    echo "Stop uWsgi [OK]"
+}
+reload() {
+    cd ${VIRTUAL_ENV}/src/
+
+    if [[ -f supervisord.conf ]]; then
+        python manage.py supervisor stop all
+        python manage.py supervisor start all
+        echo "Reload Supervisor [OK]"
+    fi
+    ps --no-heading -fC uwsgi|awk '{if($3==1)print$2}'|while read pid; do
+        if [[ ${pid} -ge 1 ]]; then
+            ps_cwd=$(lsof -p ${pid}|awk '{if($4=="cwd")print$NF}'|head -n1)
+            ps_cmd=$(ps --no-heading -o command --pid ${pid}|grep -oP "[\S]+?\.ini"|tail -n1)
+            if [[ "${ps_cmd}" == "" ]]; then
+                continue
+            fi
+            cd ${ps_cwd}
+            ps_ini=$(readlink -m ${ps_cmd})
+            if [[ "${uwsgi_ini}" == "${ps_ini}" ]]; then
+                echo ${pid} > ${uwsgi_pid}
+                ${uwsgi_bin} --reload ${uwsgi_pid}
+            fi
+        fi
+    done
+    echo "Reload uwsgi [OK]"
+}
+restart() {
+    stop
+    sleep 1
+    start
+}
+status() {
+    cd ${VIRTUAL_ENV}/src/
+
+    stats_url=$(cat ${uwsgi_ini}|grep -oP "^[\s]*stats.*"|awk -F'[ =]+' '{print$NF}')
+    echo "You can get uwsgi service stats form ${stats_url} "
+}
+
+case "$1" in
+    start|stop|reload|restart|status)
+        if [[ ! -f ${uwsgi_ini} ]]; then
+            echo "Can not find configuration file [uwsgi.ini] !"
+            echo "This script [${PROGNAME}] and configuration file [uwsgi.ini] must be within the working directory!"
+            exit 2
+        fi
+        sed -i "/pidfile/d" ${uwsgi_ini}
+        $1
+        ;;
+    *)
+        echo $"Usage: $0 {start|stop|reload|restart|status}"
+        exit 2
+esac

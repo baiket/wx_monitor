@@ -1,0 +1,127 @@
+<!-- hbox layout -->
+<div class="hbox hbox-auto-xs bg-light " ng-init="
+  app.settings.asideFixed = true;
+  app.settings.asideDock = false;
+  app.settings.container = false;
+  app.hideAside = false;
+  app.hideFooter = true;
+  " ng-controller="userPermCtrl">
+  <!-- column -->
+  <div class="col w-lg lt b-r">
+    <div class="vbox">
+      <div class="wrapper">
+        <a href class="pull-right btn btn-sm btn-info m-t-n-xs" ng-click="createPermission()">+添加</a>
+        <div class="h4">用户列表</div>
+      </div>
+      <div class="wrapper b-t m-t-xxs">
+        <div class="input-group">
+          <span class="input-group-addon input-sm"><i class="fa fa-search"></i></span>
+          <input type="text" class="form-control input-sm" placeholder="search" ng-model="query">
+        </div>
+      </div>
+      <div class="row-row">
+        <div class="cell scrollable hover">
+          <div class="cell-inner">
+            <div class="padder">
+              <div class="list-group">
+                <a ng-repeat="permission in permissions | filter:query | orderBy:'date':true" class="list-group-item  b-l-3x hover-anchor" ng-class="{'hover': permission.selected,'b-l-primary':permission.selected}" ng-click="selectPermission(permission)">
+                  <span ng-click='deletePermission(permission)' class="pull-right text-muted hover-action"><i class="fa fa-times"></i></span>
+                  <span class="block text-ellipsis">{{ permission.name ? permission.name : 'Empty permission' }}</span>
+                  <small class="text-muted">{{ permission.recordTime | fromNow }}</small>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- /column -->
+
+  <!-- column -->
+  <div class="col">
+    <div class="vbox">
+      <div class="wrapper bg-light lt b-b">
+        <span class="text-muted">最后记录时间：</span> <span>{{ permission.recordTime  | date:'MMM-dd-yyyy H:mm' }}</span>
+      </div>
+      <div class="row-row">
+        <div class="cell"  style="margin: 7px;">
+          <div class="cell-inner">
+								<div class="row">
+									<div class="panel panel-default" >
+						        <div class="panel-heading">
+						         	 权限信息
+						        </div>
+						        <div class="panel-body">
+						          <form editable-form name="editableForm" onaftersave="savePermission(permission)">
+						            <div class="form-horizontal">
+						              <div class="form-group">
+						                <label class="col-sm-3 control-label">权限名称：</label>
+						                <div class="col-sm-9">
+						                  <p class="form-control-static">
+						                    <span editable-text="permission.name">{{ permission.name || 'empty' }}</span>
+						                  </p>
+						                </div>
+						              </div>
+						              <div class="form-group">
+						                <label class="col-sm-3 control-label">权限描述：</label>
+						                <div class="col-sm-9">
+						                  <p class="form-control-static">
+						                    <span editable-textarea="permission.describe" e-rows="2" e-cols="100">
+						                      {{ permission.describe || 'empty' }}
+						                    </span>
+						                  </p>
+						                </div>
+						              </div>
+						              <div class="form-group">
+						                <label class="col-sm-3 control-label">权限角色：</label>
+						                <div class="col-sm-9">
+						                  <p class="form-control-static">
+						                    <span editable-checklist="permission.roles"  e-ng-options="s.id as s.name for s in roles">
+						                      {{showRoles(permission.roles)}}
+						                    </span>
+						                  </p>
+						                </div>
+						              </div>
+												  <div class="form-group">
+						                <label class="col-sm-3 control-label">权限用户：</label>
+						                <div class="col-sm-9">
+						                  <p class="form-control-static">
+						                    <span editable-tags-input="permission.users"  data-e-ng-model="permission.users">
+						                    	{{showUsers(permission.users)}}
+						                       <editable-tags-input-auto-complete source="loadTags($query)"></editable-tags-input-auto-complete>
+						                    </span>
+						                  </p>
+						                </div>
+						              </div>
+						              <div class="form-group">
+						                <div class="col-sm-9 col-sm-offset-3">
+						                  <button type="button" class="btn btn-default" ng-click="editableForm.$show()" ng-show="!editableForm.$visible">
+						                    	编辑
+						                  </button>
+						                  <!-- buttons to submit / cancel form -->
+						                  <span ng-show="editableForm.$visible">
+						                    <button type="submit" class="btn btn-primary" ng-disabled="editableForm.$waiting">
+						                      	保存
+						                    </button>
+						                    <button type="button" class="btn btn-default" ng-disabled="editableForm.$waiting" ng-click="editableForm.$cancel()">
+				                     		 		取消
+						                    </button>
+						                  </span>
+						                </div>
+						              </div>
+						            </div>
+						          </form>
+						        </div>
+						      </div>
+								</div>
+							</div>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+  <!-- /column -->
+</div>
+<!-- /hbox layout -->

@@ -1,0 +1,137 @@
+<!-- hbox layout -->
+<div class="hbox hbox-auto-xs hbox-auto-sm bg-light " ng-init="
+  app.settings.asideFixed = true;
+  app.settings.asideDock = false;
+  app.settings.container = false;
+  app.hideAside = false;
+  app.hideFooter = true;
+  " ng-controller="ServiceCtrl">
+				
+<!-- column -->
+  <div class="col w-lg lt b-r">
+  	 <toaster-container toaster-options="{'position-class': 'toast-bottom-right', 'close-button':true}"></toaster-container>
+    <div class="vbox">
+      <div class="wrapper">
+        <div class="h4">主业务列表</div>
+      </div>
+      <div class="wrapper b-t m-t-xxs">
+        <div class="input-group">
+          <span class="input-group-addon input-sm"><i class="fa fa-search"></i></span>
+          <input type="text" class="form-control input-sm" placeholder="search" ng-model="query">
+        </div>
+      </div>
+      <div class="row-row">
+        <div class="cell scrollable hover">
+          <div class="cell-inner">
+            <div class="padder">
+              <div class="list-group">
+                <a ng-repeat="item in sp_items | filter:query" class="list-group-item  b-l-3x hover-anchor" ng-class="{'hover': item.selected,'b-l-primary':item.selected}" ng-click="selectServicePool(item)">
+                  <span class="block text-ellipsis">{{ item.name ? item.name : 'Empty item' }}</span>
+                  <small class="text-muted">{{ item.children[0].name}}，……</small>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- /column -->
+
+  <!-- column -->
+  <div class="col">
+    <div class="vbox">
+      <div class="wrapper bg-light lt b-b">
+        <span class="text-muted">业务权限列表</span>
+       
+      </div>
+      <div class="row-row">
+        <div class="cell"  style="margin: 7px;">
+          <div class="cell-inner">
+						<div class="panel panel-default">
+		  	  	<div class="panel-body">
+				          <button type="button" ng-click="addDataItem('lg')" class="btn btn-sm btn-success">
+						        <i class="glyphicon glyphicon-plus">
+						        </i> 增加业务权限
+						      </button>
+						      <button type="button" ng-click="deleteSelect()" class="btn btn-sm btn-danger">
+						        <i class="glyphicon glyphicon-remove">
+						        </i> 批量删除
+						      </button>
+						      
+						    </div>
+						    <table st-table="permissions" class="table table-striped" st-safe-src="rowCollection">
+						      <thead>
+						        <tr>
+						        	<th width="3%">	
+						        		<label class="i-checks"  ng-click="selectAll()">
+					                <input type="checkbox" ng-model="checkAll"><i></i>
+              					</label>
+						        	</th>
+						        	<th st-sort="officeUser" width="15%">用户名</th>
+						          <th st-sort="servicePool" width="35%">子业务</th>
+						          <th st-sort="platform" width="15%">平台</th>
+						          <th st-sort="permission" width="25%">权限</th>
+						          <th width="10%">操作</th>
+						        </tr>
+						        <tr>
+						        	<th >
+						          </th>
+						          <th >
+						            <input st-search="'officeUser'"  class="input-sm form-control" type="search"/>
+						          </th>
+						           <th >
+						            <input st-search="'servicePool'"  class="input-sm form-control" type="search"/>
+						          </th>
+						           <th >
+						           	<select st-search="'platform'" class="form-control"  ng-model="selectedPlatform" >
+				                    <option value="">All</option>
+				                    <option ng-repeat="row in rowCollection | unique:'platform'" value="{{row.platform}}">{{row.platform}}</option>
+				                </select>
+						          </th>
+						           <th >
+						            <input st-search="'permission'" class="input-sm form-control" type="search"/>
+						          </th>
+						        </tr>
+						      </thead>
+						      <tbody>
+						        <tr ng-repeat="row in permissions|orderBy:'row.recordTime':true">
+						        	<td >
+						        		<label class="i-checks" >
+					                <input type="checkbox"  ng-model="row.check"><i></i>
+              					</label>
+              					</td>
+              				<td>{{row.officeUser}}</td>
+						          <td>{{row.servicePool}}</td>
+						          <td>{{row.platform}}</td>
+						          <td>{{row.permission}}</td>
+						          <td><button type="button" ng-click="removeItem(row.id)" class="btn btn-xs btn-danger">
+													<i class="fa fa-times"></i>
+													</button>
+						          </td>
+						        </tr>
+						      </tbody>
+						      <tfoot>
+						        <tr>
+						        <td colspan="2" >
+						         <form class="form-inline " style="margin-top: 22px;">
+							        <label>每页展示</label>
+							        <select class="form-control"  ng-init="itemsByPage = pages[0]" ng-model="itemsByPage" ng-options="x for x in pages"></select>
+							      </form>
+						      	</td>
+						          <td colspan="2" class="text-center">
+						            <div st-pagination="" st-items-by-page="itemsByPage" st-displayed-pages="7" class="no-margin"></div>
+						          </td>
+						        </tr>
+						      </tfoot>
+						    </table>
+						  </div>
+							</div>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /hbox layout -->

@@ -1,0 +1,69 @@
+<style>
+/*设置只有没有分支列表时，向左靠齐那么一点点*/
+	.only .ams-item-level-0 {
+    padding-left: 0;
+}
+</style>
+<div class="modal-body wrapper-lg">
+  <div class="row">
+    <div >
+       <form name="form-contact" ng-submit="ok()" class="form-validation">
+          <div class="panel ">
+            <div class="panel-heading">
+              <span class="h4">新网段添加</span>
+            </div>
+            <div class="panel-body">
+                <div class="form-group pull-in clearfix">
+                  <div class="form-group">
+                    <label>网段</label>
+                    <input type="text" class="form-control" placeholder="请输入网段" ng-model="result.subnet" required >
+                  </div>
+                <div class="form-group">
+                  <label>坐标</label>
+                  <!--<input type="url" class="form-control" placeholder="http://" ng-model="contact.url" required>-->
+              	<div class="row">
+                  <div class="col-md-2">
+				    <select class="form-control" ng-model="result.country" ng-options="country.label for country in result.location_list">
+				      <option value="">-- 国家 --</option>
+				    </select>
+				  </div>
+				  <div class="col-md-2" ng-if="result.country.children">
+				    <select class="form-control" ng-model="result.area"
+				            ng-options="area.label for area in result.country.children">
+				      <option value="">-- 大区 --</option>
+				    </select>
+				  </div>
+				  <div class="col-md-2" ng-if="result.area.children">
+				    <select class="form-control" ng-model="result.region" ng-options="region.label for region in result.area.children">
+				      <option value="">-- 省份 --</option>
+				    </select>
+				  </div>
+				   <div class="col-md-2" ng-if="result.region.children">
+				    <select class="form-control" ng-model="result.city" ng-options="city.label for city in result.region.children">
+				      <option value="">-- 市区 --</option>
+				    </select>
+				  </div>
+				   <div class="col-md-2" ng-if="result.city.children">
+				    <select class="form-control" ng-model="result.county" ng-options="county.label for county in result.city.children">
+				      <option value="">-- 县城 --</option>
+				    </select>
+				  </div>
+				</div>
+                </div>
+                <div class="form-group">
+                  <label>运营商</label>
+                   <select class="form-control" ng-model="result.isp" ng-options="isp.name for isp in result.isp_list">
+				      <option value="">-- 请选择运营商 --</option>
+				    </select>
+                </div>
+            </div>
+            <footer class="panel-footer text-right ">
+              <button ng-click="cancel()" class="btn btn-info" style="margin-right: 20px;">取消</button>
+              
+              <button type="submit" class="btn btn-success">提交</button>
+            </footer>
+          </div>
+        </form>
+    </div>
+  </div>
+</div>

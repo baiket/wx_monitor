@@ -1,0 +1,63 @@
+<div class="modal-body wrapper-lg">
+  <div class="row">
+    <div class="col-sm-6 b-r">
+      <h4 class="m-t-none font-thin">业务权限添加</h4>
+      <h4><small class="text-muted" >（{{user.username}},{{user.email}},{{user.position}},<br>{{user.orgname}}）</small></h4>
+       
+      <p>首先选择子业务数据，然后配置相应的平台和权限。</p>
+      <form role="form" style="margin-top: 20px;">
+        <div class="form-group">
+          <label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;子业务：</label>
+          <angular-multi-select
+						input-model="result.input_sp_data"
+						output-model="result.output_sp_data"
+						output-type="objects"
+					
+						dropdown-label="<[
+						<# angularMultiSelectConstants.INTERNAL_STATS_TOTAL_LEAFS #> === undefined ? 'No available items' :
+						<# angularMultiSelectConstants.INTERNAL_STATS_CHECKED_LEAFS #> === 0 ? 'No checked items' :
+						<# angularMultiSelectConstants.INTERNAL_STATS_CHECKED_LEAFS #> + (<# angularMultiSelectConstants.INTERNAL_STATS_TOTAL_NODES #> - <# angularMultiSelectConstants.INTERNAL_STATS_UNCHECKED_NODES #>) + ' checked ' + (<# angularMultiSelectConstants.INTERNAL_STATS_CHECKED_LEAFS #> === 1 ? 'item': 'items')
+						]>"
+						node-label="<[ text ]>"
+						leaf-label="<[ nodeShow ]>"
+						search-field="nodeShow"
+						></angular-multi-select>
+        </div>
+        <div class="form-group" style="margin-top: 20px;">
+          <label>平台权限：</label>
+             <angular-multi-select
+						input-model="result.input_pp_data"
+						output-model="result.output_pp_data"
+						output-type="objects"
+					
+						dropdown-label="<[
+						<# angularMultiSelectConstants.INTERNAL_STATS_TOTAL_LEAFS #> === undefined ? 'No available items' :
+						<# angularMultiSelectConstants.INTERNAL_STATS_CHECKED_LEAFS #> === 0 ? 'No checked items' :
+						<# angularMultiSelectConstants.INTERNAL_STATS_CHECKED_LEAFS #> + (<# angularMultiSelectConstants.INTERNAL_STATS_TOTAL_NODES #> - <# angularMultiSelectConstants.INTERNAL_STATS_UNCHECKED_NODES #>) + ' checked ' + (<# angularMultiSelectConstants.INTERNAL_STATS_CHECKED_LEAFS #> === 1 ? 'item': 'items')
+						]>"
+						node-label="<[ text ]>"
+						leaf-label="<[ name ]>"
+						search-field="name"
+						></angular-multi-select>
+        </div>
+        <div class="checkbox m-t-lg">
+          <button type="submit" class="btn btn-sm btn-success pull-right text-uc m-t-n-sm" ng-click="ok()"><strong>确认添加</strong></button>
+        </div>
+      </form>
+    </div>
+    <div class="col-sm-6">
+    	<h5>子业务列表</h5>
+			 <ul ng-init="">  
+	        <li ng-repeat="row in result.output_sp_data">  
+	            {{ row.nodeShow }}  
+	        </li>  
+	      </ul>  
+    	<h5>平台权限列表</h5>
+    	 <ul ng-init="">  
+	        <li ng-repeat="row in result.output_pp_data">  
+	           {{ row.name}}（{{ row.platform.name }}）  
+	        </li>  
+	      </ul>  
+    </div>
+  </div>
+</div>

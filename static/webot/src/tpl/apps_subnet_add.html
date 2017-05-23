@@ -1,0 +1,81 @@
+<!-- hbox layout -->
+<div class="hbox hbox-auto-xs bg-light " ng-init="
+  app.settings.asideFixed = true;
+  app.settings.asideDock = false;
+  app.settings.container = false;
+  app.hideAside = false;
+  app.hideFooter = true;
+  " ng-controller="subnet_add_ctrl">
+
+  <!-- column -->
+  <div class="col">
+    <div class="vbox">
+    	  <toaster-container toaster-options="{'position-class': 'toast-bottom-right', 'close-button':true}"></toaster-container>
+      <div class="wrapper bg-light lt b-b">
+        <span class="text-muted">自定义网段</span>
+        <div class="m-l inline dropdown" dropdown>
+          <a class="v-middle pos-rlt inline bg-{{note.color}}" dropdown-toggle style="width:16px;height:16px;top:-2px"></a>
+          <div class="dropdown-menu animated fadeInUp w wrapper">
+            <a ng-repeat="color in colors" class="inline m-xs bg-{{color}}" style="width:18px;height:18px" ng-click=" note.color = color "></a>
+          </div>
+        </div>
+      </div>
+      <div class="modal-body wrapper-lg">
+           <div class="panel panel-default">
+					    <div class="panel-body">
+					      <button type="button" ng-click="addCustomSubnet('lg')" class="btn btn-sm btn-success">
+					        <i class="glyphicon glyphicon-plus">
+					        </i> 添加网段
+					      </button>
+					    </div>
+					    <table st-table="subnets_custom" st-safe-src="rowCollection" class="table table-striped">
+					      <thead>
+				         <tr>
+				         	<th width="4%"></th>
+					        <th st-sort="subnet">网段</th>
+					        <th st-sort="country">国家</th>
+					        <th st-sort="area">大区</th>
+					        <th st-sort="region">省份</th>
+					        <th st-sort="city">城市</th>
+					        <th st-sort="county">县城</th>
+					        <th st-sort="isp">运营商</th>
+					        <th >操作</th>
+					      </tr>
+					      </thead>
+					      <tbody>
+					      <tr ng-repeat="row in subnets_custom">
+					      	<th ></th>
+					          <td>{{row.subnet}}</td>
+						        <td>{{row.country}}</td>
+						        <td>{{row.area}}</td>
+						        <td>{{row.region}}</td>
+						        <td>{{row.city}}</td>
+						        <td>{{row.county}}</td>
+						        <td>{{row.isp}}</td>
+					        <td>
+					          <button type="button" ng-click="removeItem(row.id)" class="btn btn-xs btn-default">
+					            <i class="fa fa-times"></i>
+					          </button>
+					        </td>
+					      </tr>
+					      </tbody>
+			          <tfoot>
+				        <tr>
+				        <td colspan="2" >
+				         <form class="form-inline " style="margin-top: 22px;">
+					        <label>每页展示</label>
+					        <select class="form-control"  ng-init="itemsByPage = pages[0]" ng-model="itemsByPage" ng-options="x for x in pages"></select>
+					      </form>
+				      	</td>
+				          <td colspan="2" class="text-center">
+				            <div st-pagination="" st-items-by-page="itemsByPage" st-displayed-pages="7" class="no-margin"></div>
+				          </td>
+				        </tr>
+				      </tfoot>
+					    </table>
+					  </div>
+          </div>
+        </div>
+      </div>
+</div>
+<!-- /hbox layout -->
