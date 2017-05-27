@@ -26,4 +26,11 @@ urlpatterns = [
     url(r'^api/heartListen', views.heartListen),
     url(r'^api/logout', views.logout),
 
+    url(r'^html/home', views.home),
+    url(r'^html/buy', views.buy),
+    url(r'^html/download', views.download),
+    url(r'^html/pay', views.pay),
+
+    url(r'^$', views.home),
+
 ]

@@ -12,6 +12,18 @@ import time
 from datetime import datetime
 # Create your views here.
 
+def buy(request):
+    return render(request, 'buy.html')
+
+def download(request):
+    return render(request, 'download.html')
+
+def pay(request):
+    return render(request, 'paypage.html')
+
+def home(request):
+    return render(request, 'index.html')
+
 def register(request):
     message = '参数格式错误'
     try:

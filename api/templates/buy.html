@@ -1,0 +1,80 @@
+{% extends 'templates.d/base.html' %}
+{% load staticfiles %}
+{% block title %}澎小湃微信群提醒软件{% endblock %}
+
+{% block custom_head %}
+	<style>
+	.register_form ul li{
+	  margin-top:30px;
+	  list-style-type:none;
+
+	}
+	</style>
+{% endblock %}
+{% block content %}
+ <!-- end:top -->
+	<header id="fh5co-header-section">
+		<div class="container">
+			<div class="nav-header">
+				<a href="#" class="js-fh5co-nav-toggle fh5co-nav-toggle"><i></i></a>
+				<h1 id="fh5co-logo"><a href="/">主页</a></h1>
+				<!-- START #fh5co-menu-wrap -->
+			<nav id="fh5co-menu-wrap" role="navigation">
+				<ul class="sf-menu" id="fh5co-primary-menu">
+					<li ><a href="/">产品介绍</a></li>
+					<li class="active"><a href="/html/buy">软件购买</a></li>
+					<li><a href="/html/download">软件下载</a></li>
+				</ul>
+			</nav>
+			</div>
+		</div>
+	</header>
+	<div class="fh5co-hero">
+			<div class="fh5co-overlay"></div>
+			<div class="fh5co-cover text-center" style="background-image: url(../static/images/bg-1.png);">
+				<div class="desc animate-box">
+					<h2>获取授权码</h2>
+					<span>请在下方填写相关信息付款</span>
+					<span>付款成功后，请您联系工作人员，通过QQ私发给您</span>
+
+				</div>
+			</div>
+	</div>
+		<!-- END: header -->
+	<div id="fh5co-work">
+		<div class="work-wrap">
+			<div class="container">
+				<div class="register_form" style="margin:50px auto;padding:0 300px;">
+				<ul>
+					<li>
+					  <input type="text" placeholder="请输入您的手机号" style="width:400px; height:45px; font-size:20px;">
+					</li>
+					<li>
+					   <input type="text" placeholder="请输入您的姓名" style="width:400px; height:45px; font-size:20px;">
+					</li>
+
+					<li>
+					   <input type="text" placeholder="请输入您的支付宝账号" style="width:400px; height:45px; font-size:20px;">
+					   <p style="color:#6699FF;font-size:18px;margin-top:10px">该支付宝号即您付款的账号，以方便工作人员核对</br>信息</p>
+					</li>
+					<li>
+					   <label class="radio-inline" style="margin-left：300px;font-size:16px;color:#FF9900;">
+							 <input type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1"> 199元/一年
+					   </label>&nbsp; &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp;
+					   <label class="radio-inline" style="margin-left：300px;font-size:16px;color:#FF9900;">
+							 <input type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2"> 299元/永久
+					   </label>
+					</li>
+					<li>
+					   <a class="btn" type="submit" style="background-color:#6699FF;color:black;width:400px;font-size:25px;padding:5px 35px;-moz-box-shadow:0px 0px 5px #333333; -webkit-box-shadow:0px 0px 5px #333333; box-shadow:0px 0px 5px #333333;">
+						   提 &nbsp;  交 &nbsp;  信 &nbsp;  息
+					   </a>
+					   <p style="color:#6699FF;font-size:20px;margin-top:10px">提交信息后会自动跳转到付款页面，付款后请</br>联系QQ：1524865852，工作人员会及时给您分</br>配授权码</p>
+					</li>
+				</ul>
+
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}

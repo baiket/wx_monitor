@@ -1,0 +1,25 @@
+{% extends 'templates.d/base.html' %}
+{% load staticfiles %}
+{% block title %}支付宝付款{% endblock %}
+{% block custom_head %}
+	<style>
+	</style>
+{% endblock %}
+{% block content %}
+
+<div class="fh5co-cover" style="background-image: url(../static/images/imge_3.jpg);padding-top:100px;">
+
+	<div class="pay_scan" style="-moz-box-shadow:0px 0px 20px #333333; -webkit-box-shadow:0px 0px 20px #333333; box-shadow:0px 0px 20px #333333;width:400px;height:660px;background-color:#FFFFFF;border-radius:2px;margin:0 auto;;padding:40px 50px">
+		<div style="background-color:black;width:300px;height:350px;
+				   -moz-box-shadow:0px 0px 12px #333333; -webkit-box-shadow:0px 0px 12px #333333; box-shadow:0px 0px 12px #333333;">
+				   <img src="../static/images/scan_1.jpg"  alt="支付宝付款二维码" height="350px" width="300px"/>
+		</div>
+		<p style="margin-top:30px;color:#000000;font-family:微软雅黑;text-align:center">请使用支付宝扫码支付</p>
+		<p style="font-size:18px;text-align:center;color:#FF9900">199元/一年   &nbsp; &nbsp; &nbsp; &nbsp;      299元/永久</p>
+		<p style="text-align:center">付款成功后请将付款截图发给QQ：15212588，工作人员确认后给您分配授权码</p>
+
+	</div>
+
+</div>
+
+{% endblock %}

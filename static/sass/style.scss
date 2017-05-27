@@ -1,11 +1,11 @@
 $font-primary: 'Source Sans Pro', Arial, sans-serif;
 // Overrides
-$grid-gutter-width: 40px !default; 
+$grid-gutter-width: 40px !default;
 $border-radius-base:  4px !default;
 $padding-base-vertical: 14px !default;
 
 $brand-primary: #79c34f !default;
-$brand-secondary: #1fb5f6 !default; 
+$brand-secondary: #1fb5f6 !default;
 
 $brand-white: #fff;
 $brand-black: #000;
@@ -58,16 +58,16 @@ $form-group-margin-bottom: 30px !default;
           border-radius: $radius;
 }
 @mixin flex() {
-	display: -webkit-box;      
-  	display: -moz-box;         
-  	display: -ms-flexbox;      
-  	display: -webkit-flex;     
-  	display: flex;             
+	display: -webkit-box;
+  	display: -moz-box;
+  	display: -ms-flexbox;
+  	display: -webkit-flex;
+  	display: flex;
 }
 @mixin flexwrap() {
 	flex-wrap: wrap;
-	-webkit-flex-wrap: wrap; 
-	-moz-flex-wrap: wrap; 
+	-webkit-flex-wrap: wrap;
+	-moz-flex-wrap: wrap;
 }
 
 @font-face {
@@ -82,7 +82,7 @@ $form-group-margin-bottom: 30px !default;
 }
 
 @mixin icomoon() {
-	
+
 	font-family: 'icomoon';
 	speak: none;
 	font-style: normal;
@@ -94,10 +94,10 @@ $form-group-margin-bottom: 30px !default;
 	/* Better Font Rendering =========== */
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
-	
+
 }
 
-// Import 
+// Import
 @import 'bootstrap/mixins';
 @import 'bootstrap/variables';
 
@@ -106,7 +106,7 @@ $form-group-margin-bottom: 30px !default;
 
 /* =======================================================
 *
-* 	Template Style 
+* 	Template Style
 *	Edit this section
 *
 * ======================================================= */
@@ -242,7 +242,7 @@ figure {
 		margin-top: -40px;
 		z-index: 2;
 		color: $brand-white;
-		
+
 		@media screen and (max-width: $screen-sm) {
 			padding-left: 15px;
 			padding-right: 15px;
@@ -265,7 +265,7 @@ figure {
 			letter-spacing: 1px;
 			a{
 				color: $brand-white;
-				
+
 
 				&:hover,&:focus{
 					color: #fff !important;
@@ -296,7 +296,7 @@ figure {
 
 	span{
 		margin-left: 20px;
-		color: $brand-white;	
+		color: $brand-white;
 		position: relative;
 		padding-left: 15px;
 
@@ -325,8 +325,8 @@ figure {
 .sf-menu ul {
 	box-shadow: none;
 	border: transparent;
-	min-width: 15em; 
-	*width: 15em; 
+	min-width: 15em;
+	*width: 15em;
 }
 
 .sf-menu a {
@@ -337,10 +337,10 @@ figure {
 	// text-transform: uppercase;
 	// letter-spacing: 1px;
 	border-left: none;
-	border-top: none; 
+	border-top: none;
 	border-top: none;
 	text-decoration: none;
-	zoom: 1; 
+	zoom: 1;
 	font-size: 18px;
 	border-bottom: none!important;
 
@@ -353,7 +353,7 @@ figure {
 	a{
 		&:hover,&:focus{
 			color: #fff;
-		} 
+		}
 	}
 }
 
@@ -367,7 +367,7 @@ figure {
 .sf-menu ul li a,
 .sf-menu ul ul li a {
 	text-transform: none;
-	padding: .75em 1em;	
+	padding: .75em 1em;
 	letter-spacing: 1px;
 }
 .sf-menu li:hover a,
@@ -400,13 +400,13 @@ figure {
 	height: 0;
 	width: 0;
 	border: 5px solid transparent;
-	border-top-color: #ccc; 
+	border-top-color: #ccc;
 }
 
 .sf-arrows > li > .sf-with-ul:focus:after,
 .sf-arrows > li:hover > .sf-with-ul:after,
 .sf-arrows > .sfHover > .sf-with-ul:after {
-	border-top-color: #ccc; 
+	border-top-color: #ccc;
 }
 .sf-arrows ul .sf-with-ul:after {
 	margin-top: -5px;
@@ -457,7 +457,7 @@ figure {
 			color: $brand-white !important;
 		}
 	}
-	
+
 }
 
 #fh5co-menu-wrap {
@@ -488,7 +488,7 @@ figure {
 				// top: 15px;
 				top: 50%;
 				margin-top: -7px;
-				content: "\e64b";	
+				content: "\e64b";
 				// color: rgba(0,0,0,.3);
 				color: $brand-secondary;
 			}
@@ -511,7 +511,7 @@ figure {
 				}
 			}
 		}
-	}	
+	}
 }
 #fh5co-primary-menu .fh5co-sub-menu {
 	padding:10px 7px 10px;
@@ -529,9 +529,9 @@ figure {
 	> li {
 		> .fh5co-sub-menu {
 			left: 100%;
-		}	
+		}
 	}
-	
+
 }
 
 #fh5co-primary-menu .fh5co-sub-menu:before {
@@ -575,7 +575,7 @@ figure {
 	-o-box-shadow:0 5px 15px 4px rgba(0,0,0,0.09);
 	box-shadow:0 5px 15px 4px rgba(0,0,0,0.09);
 	&:before {
-		display:none;	
+		display:none;
 	}
 }
 #fh5co-primary-menu .fh5co-sub-menu a {
@@ -645,7 +645,7 @@ h3.heading-section{
 		right: 0;
 		background: rgba(0,0,0,.5);
 		opacity: 0;
-		
+
 		.prod-title{
 			position: absolute;
 			top: 50%;
@@ -736,7 +736,7 @@ h3.heading-section{
 			@media screen and (max-width: $screen-sm) {
 				right: 0;
 			}
-		}	
+		}
 		.img-holder-2 {
 			bottom: -2em;
 			right: 50px;
@@ -804,12 +804,12 @@ h3.heading-section{
 		p {
 			color: rgba(0,0,0,.5);
 			a{
-				
+
 			}
 		}
 	}
 
-	
+
 }
 
 
@@ -847,10 +847,10 @@ h3.heading-section{
 		border: none;
 		border-bottom: 1px solid rgba(0,0,0,.1);
 		font-size: 18px;
-		
+
 		font-weight: 400;
 		@include border-radius(0px);
-		
+
 		&:focus, &:active {
 			border-bottom: 1px solid rgba(0,0,0,.5);
 		}
@@ -866,7 +866,7 @@ h3.heading-section{
 
 .fh5co-testimonial{
 	border-right: 1px solid rgba($brand-black,.06);
-	// padding-right: 30px;	
+	// padding-right: 30px;
 	// margin: 0 auto;
 	// width: 85%;
 
@@ -930,7 +930,7 @@ h3.heading-section{
 #fh5co-blog-section{
 	background: #184bde;
 	padding: 5em 0;
-	
+
 	h3.heading-section{
 		color: #fff;
 	}
@@ -1044,7 +1044,7 @@ h3.heading-section{
 			display: inline-block;
 			margin-left: 30px;
 			text-transform: uppercase;
-			
+
 			@media screen and (max-width: $screen-sm) {
 				margin: 0 0 0 7px;
 			}
@@ -1159,7 +1159,7 @@ h3.heading-section{
 
 // Burger Menu
 .fh5co-nav-toggle {
- 
+
   cursor: pointer;
   text-decoration: none;
   &.active i {
@@ -1258,7 +1258,7 @@ h3.heading-section{
   		top: 0px;
   		margin-top: 2.5em;
   	}
-  
+
 }
 
 
@@ -1288,25 +1288,25 @@ h3.heading-section{
 	padding-bottom: 4em;
 	@media screen and (max-width: $screen-sm ) {
 		padding-bottom: 2em;
-	}	
+	}
 }
 .row-top-padded-md {
 	padding-top: 4em;
 	@media screen and (max-width: $screen-sm ) {
 		padding-top: 2em;
-	}	
+	}
 }
 .row-bottom-padded-sm {
 	padding-bottom: 2em;
 	@media screen and (max-width: $screen-sm ) {
 		padding-bottom: 2em;
-	}	
+	}
 }
 .row-top-padded-sm {
 	padding-top: 2em;
 	@media screen and (max-width: $screen-sm ) {
 		padding-top: 2em;
-	}	
+	}
 }
 
 .border-bottom {
@@ -1317,11 +1317,11 @@ h3.heading-section{
 	line-height: 1.8;
 }
 
-.no-js #loader { 
-	display: none;  
+.no-js #loader {
+	display: none;
 }
-.js #loader { 
-	display: block; position: absolute; left: 100px; top: 0; 
+.js #loader {
+	display: block; position: absolute; left: 100px; top: 0;
 }
 .fh5co-loader {
 	position: fixed;
@@ -1330,5 +1330,5 @@ h3.heading-section{
 	width: 100%;
 	height: 100%;
 	z-index: 9999;
-	background: url(../images/hourglass.svg) center no-repeat #222222;
+	background: url(../static/images/hourglass.svg) center no-repeat #222222;
 }
