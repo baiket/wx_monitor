@@ -12,13 +12,13 @@ from celery import task, group, platforms
 
 platforms.C_FORCE_ROOT = True
 
-#每隔十分钟查询下用户的保活时间
+#每隔五分钟查询下用户的保活时间
 @task
 def offline_sync():
-    users = Wxuser.objects.all()
+    users = LoginInfo.objects.all()
     for user in users:
-        record_time= time.mktime(user.onlineTime.timetuple())
+        lastTime= time.mktime(user.lastTime.timetuple())
         now_time = time.time()
-        if now_time - record_time > 600.0 and user.isonline == 1:
+        if now_time - lastTime > 300.0 and user.isonline == 1:
             user.isonline = False
             user.save()

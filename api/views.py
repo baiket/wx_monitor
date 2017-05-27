@@ -8,7 +8,8 @@ from django.http import HttpResponse, JsonResponse
 import json
 import traceback
 from .models import *
-import time, datetime
+import time
+from datetime import datetime
 # Create your views here.
 
 def register(request):
@@ -18,15 +19,16 @@ def register(request):
         username = param['username']
         realname = param['realname']
         alipay = param['alipay']
-        if not username or not realname or not alipay:
+        deadline = param['deadline']
+        if not username or not realname or not alipay or not deadline:
             message = "参数不能为空"
             raise 'param is none!'
     except:
         return JsonResponse({'status': 'error', 'message': message, 'traceback': traceback.format_exc()})
     if Wxuser.objects.filter(username=username).exists():
         return JsonResponse({"status": "error", "message": "username is exist"})
-    Wxuser.objects.create(username=username, realname=realname,
-                          alipay=alipay, recordTime=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+    Wxuser.objects.create(username=username, realname=realname,deadline=deadline,
+                          alipay=alipay, recordTime=datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
     return JsonResponse({"status": "success", "data": {"validate": True, "username": username}})
 
 def login(request):
@@ -35,7 +37,7 @@ def login(request):
         param = json.loads(request.body)
         username = param['username']
         authword = param['authword']
-        if not username or not authword:
+        if not username or not authword or username == "" or authword == "":
             message = "参数不能为空"
             raise 'param is none!'
     except:
@@ -43,14 +45,25 @@ def login(request):
     if Wxuser.objects.filter(username=username).exists():
         user = Wxuser.objects.get(username=username)
         if user.authword != authword.strip():
-            return JsonResponse({"status": "success", "data": {"validate": False, "username":username}})
-        else:
-            LoginRecord.objects.create(username=username)
-            #添加记录时间
-            user.isonline = True
-            user.onlineTime = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            user.save()
-            return JsonResponse({"status": "success", "data": {"validate": True, "username": username}})
+            return JsonResponse({"status": "success", "data":
+                                 {"validate": False, "msg": "授权码输入错误","username":username}})
+        record_time= time.mktime(user.recordTime.timetuple())
+        now_time = time.time()
+        dead_line = user.deadline * 31622400.0
+        if now_time - record_time > dead_line :
+            return JsonResponse({"status": "success", "data":
+                                 {"validate": False, "msg": "授权码已到期","username":username}})
+        LoginRecord.objects.create(username=username)
+        #添加记录时间
+        if LoginInfo.objects.filter(username=username).exists():
+            login_user = LoginInfo.objects.get(username=username)
+            if login_user.isonline:
+                return JsonResponse({"status": "success", "data":
+                                     {"validate": False, "msg": "账号已在他处登录","username":username}})
+            login_user.isonline = True
+            login_user.lastTime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            login_user.save()
+        return JsonResponse({"status": "success", "data": {"validate": True, "username": username}})
     return JsonResponse({"status": "error", "message": "user not exists"})
 
 #每隔十分钟发送在线消息
@@ -64,8 +77,8 @@ def heartListen(request):
             raise 'param is none!'
     except:
         return JsonResponse({'status': 'error', 'message': message, 'traceback': traceback.format_exc()})
-    user = Wxuser.objects.get(username=username)
-    user.onlineTime=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    user = LoginInfo.objects.get(username=username)
+    user.onlineTime=datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     user.save()
     return JsonResponse({"status": "success", "data": {"validate": True, "username": username}})
 
@@ -79,7 +92,7 @@ def logout(request):
             raise 'param is none!'
     except:
         return JsonResponse({'status': 'error', 'message': message, 'traceback': traceback.format_exc()})
-    user = Wxuser.objects.get(username=username)
+    user = LoginInfo.objects.get(username=username)
     user.isonline=False
     user.save()
     return JsonResponse({"status": "success", "data": {"validate": True, "username": username}})
